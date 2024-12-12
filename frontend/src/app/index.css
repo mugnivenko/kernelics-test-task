@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@theme {
+	--color-primary: oklch(66.85% 0.1635 244.61);
+	--color-light-gray: oklch(97.29% 0.0029 264.54);
+	--color-divider: oklch(97.31% 0 0);
+	--color-icon-secondary: oklch(84.98% 0.0276 255.11);
+	--color-placeholder: oklch(71.03% 0.037 256.37);
+	--color-accent: oklch(96.83% 0.0069 247.9);
+	--color-accent-foreground: oklch(20.77% 0.0398 265.75);
+	--color-select-placeholder: oklch(63.32% 0.0189 267.7);
+	--color-text-primary: oklch(28.04% 0.0436 253.25);
+	--color-ring: oklch(72.38% 0.14 239.86);
+	--color-shadow: oklch(89.69% 0.0437 237.63);
+	--color-select-border: oklch(90.37% 0 0);
+	--color-input: oklch(72.38% 0.14 239.86);
+	--color-error: oklch(69.33% 0.1781 27.8);
+}
+
+@layer base {
+	input::placeholder,
+	textarea::placeholder {
+		/* biome-ignore lint/correctness/noUnknownFunction: <it's a valid function> */
+		color: theme(--color-placeholder);
+	}
+
+	[role="button"],
+	button {
+		cursor: pointer;
+	}
+}

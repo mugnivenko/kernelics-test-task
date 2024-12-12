@@ -1,0 +1,38 @@
+[
+	{
+		"id": "d320abb6-3aca-4e1e-8247-e7a4d995d9cf",
+		"name": {
+			"first": "Eloida",
+			"last": "Porto"
+		},
+		"status": "LunchTime",
+		"avatarLink": "https://randomuser.me/api/portraits/women/61.jpg"
+	},
+	{
+		"id": "291dc648-afd8-43fc-a6b1-49fdae1cdfd7",
+		"name": {
+			"first": "Carter",
+			"last": "Côté"
+		},
+		"status": "Working",
+		"avatarLink": "https://randomuser.me/api/portraits/men/19.jpg"
+	},
+	{
+		"id": "cf8b62b4-1b69-411f-8508-98229e9a98d6",
+		"name": {
+			"first": "Markus",
+			"last": "Richard"
+		},
+		"status": "OnVacation",
+		"avatarLink": "https://randomuser.me/api/portraits/men/63.jpg"
+	},
+	{
+		"id": "19dcb8d3-3352-419d-b9d1-8f87b09d021a",
+		"name": {
+			"first": "Hildegard",
+			"last": "Lohse"
+		},
+		"status": "BusinessTrip",
+		"avatarLink": "https://randomuser.me/api/portraits/women/47.jpg"
+	}
+]
