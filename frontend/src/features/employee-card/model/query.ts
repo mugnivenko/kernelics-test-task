@@ -1,15 +1,14 @@
-import {
-	Effect,
-	Option,
-	Array as EffectArray,
-	Function as EffectFunction,
-	pipe,
-} from "effect";
+import { Effect, Option, Array as EffectArray, pipe } from "effect";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { changeEmployeeStatus } from "@/shared/api";
-import { type Employees, useToast, type Employee } from "@/shared/lib";
+import {
+	type Employees,
+	useToast,
+	type Employee,
+	cannotIncludeEmployeeInQuery,
+} from "@/shared/lib";
 import { employeeKeys, employeesQueryKeys } from "@/shared/model";
 
 export const useEmployeeStatus = (id: Employee["id"]) => {
@@ -22,30 +21,40 @@ export const useEmployeeStatus = (id: Employee["id"]) => {
 		mutationFn: (status: Employee["status"]) =>
 			changeEmployeeStatus(id, status).pipe(Effect.runPromise),
 		onSuccess(updatedEmployee) {
-			queryClient.setQueriesData<Employees>(
-				{
-					queryKey: employeesQueryKeys.all,
-				},
-				(prevData) =>
-					Option.fromNullable(prevData).pipe(
-						Option.match({
-							onSome: (prevData) =>
-								pipe(
-									prevData,
-									EffectArray.findFirstIndex(
-										(employee) => employee.id === updatedEmployee.id,
-									),
-									Option.andThen((index) =>
+			const queries = queryClient.getQueriesData<Employees>({
+				queryKey: employeesQueryKeys.all,
+			});
+
+			pipe(
+				queries,
+				EffectArray.map(([keys, prevData]) => {
+					return pipe(
+						prevData,
+						Option.fromNullable,
+						Option.andThen((prevData) =>
+							pipe(
+								prevData,
+								EffectArray.findFirstIndex(
+									(employee) => employee.id === updatedEmployee.id,
+								),
+								Option.andThen((index) => {
+									if (cannotIncludeEmployeeInQuery(updatedEmployee, keys)) {
+										queryClient.setQueryData<Employees>(keys, () =>
+											pipe(prevData, EffectArray.remove(index)),
+										);
+										return;
+									}
+									queryClient.setQueryData<Employees>(keys, () =>
 										pipe(
 											prevData,
 											EffectArray.modify(index, () => updatedEmployee),
 										),
-									),
-									Option.getOrElse(() => prevData),
-								),
-							onNone: EffectFunction.constUndefined,
-						}),
-					),
+									);
+								}),
+							),
+						),
+					);
+				}),
 			);
 		},
 		onError: () => {

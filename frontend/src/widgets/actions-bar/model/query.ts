@@ -9,7 +9,12 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { createEmployee } from "@/shared/api";
-import { useToast, type Employee, type Employees } from "@/shared/lib";
+import {
+	useToast,
+	type Employee,
+	type Employees,
+	cannotIncludeEmployeeInQuery,
+} from "@/shared/lib";
 import { employeesQueryKeys } from "@/shared/model";
 
 export const useEmployeeCreate = () => {
@@ -22,16 +27,28 @@ export const useEmployeeCreate = () => {
 		mutationFn: (employee: Omit<Employee, "id">) =>
 			createEmployee(employee).pipe(Effect.runPromise),
 		onSuccess: (newEmployee) => {
-			queryClient.setQueriesData<Employees>(
-				{ queryKey: employeesQueryKeys.all },
-				(prevData) =>
+			const queries = queryClient.getQueriesData<Employees>({
+				queryKey: employeesQueryKeys.all,
+			});
+
+			pipe(
+				queries,
+				EffectArray.map(([keys, prevData]) => {
+					if (cannotIncludeEmployeeInQuery(newEmployee, keys)) {
+						return;
+					}
 					Option.fromNullable(prevData).pipe(
 						Option.match({
-							onSome: (prevData) =>
-								pipe(prevData, EffectArray.prepend(newEmployee)),
+							onSome: (prevData) => {
+								queryClient.setQueryData(
+									keys,
+									pipe(prevData, EffectArray.prepend(newEmployee)),
+								);
+							},
 							onNone: EffectFunction.constUndefined,
 						}),
-					),
+					);
+				}),
 			);
 		},
 		onError: () => {

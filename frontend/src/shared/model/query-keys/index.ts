@@ -1,15 +1,15 @@
 import type { EmployeesSearchAndFilters } from "../../lib";
 
 export const employeesQueryKeys = {
-  all: ["employees"],
-  searchAndFilters: (data?: EmployeesSearchAndFilters) => [
-    "employees",
-    data?.status,
-    data?.searchName,
-  ],
+	all: ["employees"],
+	searchAndFilters: (data?: EmployeesSearchAndFilters) => [
+		"employees",
+		data?.status,
+		data?.searchName,
+	],
 };
 
 export const employeeKeys = {
-  employee: ["employee"],
-  employeeStatus: ["employee", "status"],
+	employee: ["employee"],
+	employeeStatus: ["employee", "status"],
 };
