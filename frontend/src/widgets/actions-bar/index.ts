@@ -1,1 +1,1 @@
-export { ActionsBar } from "./ui";
+export { ActionsBar as default } from "./ui";

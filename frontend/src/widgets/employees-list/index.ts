@@ -1,1 +1,1 @@
-export { EmployeesList } from "./ui";
+export { EmployeesList as default } from "./ui";

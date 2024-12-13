@@ -1,1 +1,1 @@
-export { CreateUserForm } from "./form";
+export type { CreateUserForm } from "./form";
