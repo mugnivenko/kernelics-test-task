@@ -18,9 +18,9 @@ import {
 	String as EffectString,
 } from "effect";
 
-import { CreateEmployeeDto } from "./dto/create-employee.dto";
-import { UpdateEmployeeDto } from "./dto/update-employee.dto";
-import { SearchEmployeesDto } from "./dto/search-employees.dto";
+import type { CreateEmployeeDto } from "./dto/create-employee.dto";
+import type { UpdateEmployeeDto } from "./dto/update-employee.dto";
+import type { SearchEmployeesDto } from "./dto/search-employees.dto";
 
 @Injectable()
 export class EmployeesService implements OnModuleInit {
@@ -62,9 +62,7 @@ export class EmployeesService implements OnModuleInit {
 						EffectArray.filter(
 							(employee) =>
 								employee.status === status &&
-								`${employee.name.first} ${employee.name.last}`.includes(
-									searchName,
-								),
+								this.#filterByName(employee, searchName),
 						),
 					),
 			),
@@ -86,14 +84,18 @@ export class EmployeesService implements OnModuleInit {
 					pipe(
 						this.data,
 						EffectArray.filter((employee) =>
-							`${employee.name.first} ${employee.name.last}`.includes(
-								searchName,
-							),
+							this.#filterByName(employee, searchName),
 						),
 					),
 			),
 			Match.orElse(() => this.data),
 		);
+	}
+
+	#filterByName(employee: CreateEmployeeDto, searchName: string) {
+		return `${employee.name.first} ${employee.name.last}`
+			.toLowerCase()
+			.includes(searchName.toLowerCase());
 	}
 
 	update(id: string, updateEmployeeDto: UpdateEmployeeDto) {
